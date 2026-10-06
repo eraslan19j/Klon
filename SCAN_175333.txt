@@ -1,0 +1,42 @@
+# Termux SCAN_175333.txt (kullanıcı yapıştırması, 2026-10-06, kesik olabilir)
+
+==== PKG ====
+package:/data/app/~~CkFJB695q2Bf7NnBvJLQiA==/com.android.camerx-VePyGi_G6G67totUd3-7vg==/base.apk
+
+versionName=6.7.000280.0
+installPermissionsFixed=false
+signatures=PackageSignatures{8300e51 version:3, signatures:[f5a2652d]}
+installer=com.android.shell
+lastUpdateTime=2026-10-06 17:50:32
+
+declared permissions (son harf x — klon rename):
+  com.android.camera.permission.RESET_PREx: prot=signature|privileged
+  com.xiaomi.camera.AUX_CONTROx: prot=signature|privileged
+  com.android.camera.permission.SPLASx: prot=signature|privileged
+  com.xiaomi.camera.permission.VIDEO_RECORD_INFx: prot=signature|privileged
+  com.android.camera.permission.CAMERA_STATUx: prot=signature|privileged
+  com.android.camera.permission.MIPUSH_RECEIVx: prot=signature
+  com.android.camera.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSIOx: prot=signature
+  com.android.camera.permission.DISTRIBUTIOx: prot=signature|privileged
+  com.android.camera.permission.DebugProvidex: prot=signature
+
+requested (özet, privileged olanlar kullanıcı APK’da genelde granted=false):
+  MANAGE_EXTERNAL_STORAGE, WRITE_MEDIA_STORAGE, SYSTEM_CAMERA,
+  WRITE_SECURE_SETTINGS, INTERACT_ACROSS_USERS(_FULL), DUMP, INJECT_EVENTS,
+  WRITE_SETTINGS, CAMERA, RECORD_AUDIO, READ_MEDIA_IMAGES/VIDEO,
+  WRITE_EXTERNAL_STORAGE, READ_EXTERNAL_STORAGE, ...
+
+install permissions granted=true (dumpsys kesiti):
+  FOREGROUND_SERVICE_CAMERA, MODIFY_AUDIO_SETTINGS, CHANGE_NETWORK_STATE,
+  FOREGROUND_SERVICE, RECEIVE_BOOT_COMPLETED, BLUETOOTH, BIND_CONTINUITY_SERVICE,
+  INTERNET, BLUETOOTH_ADMIN, CHANGE_WIFI_STATE, DebugProvidex, ACCESS_NETWORK_STATE,
+  VIBRATE, PERM_USE_INFO, FOREGROUND_SERVICE_CONNECTED_DEVICE, ACCESS_WIFI_STATE,
+  MIPUSH_RECEIVx, AD_ID
+
+Provider:
+  CameraDumpLogProvider (gerçek ad)
+  CameraSettingsSearchProvidex (stub ad) + miui.intent.action.SETTINGS_SEARCH_PROVIDER
+
+queriesPackages: gallery, scanner, mediaeditor, ...
+
+NOT: logcat / FATAL / 权限 bu yapıştırmada YOK. dumpsys grep Provider/permission kesiti.
