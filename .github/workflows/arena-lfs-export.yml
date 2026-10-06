@@ -1,0 +1,29 @@
+name: arena-lfs-export
+on:
+  push:
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          lfs: true
+      - name: Verify and split APK
+        run: |
+          set -euo pipefail
+          ls -la MiuiCamera.apk
+          sha256sum MiuiCamera.apk | tee lfs_export_sha256.txt
+          mkdir -p lfs_export
+          split -b 45m -d -a 2 MiuiCamera.apk lfs_export/part_
+          ls -la lfs_export
+      - name: Commit parts back to branch
+        run: |
+          set -euo pipefail
+          git config user.name "arena-export-bot"
+          git config user.email "arena-export-bot@users.noreply.github.com"
+          git add lfs_export lfs_export_sha256.txt
+          git commit -m "temp(lfs-export): split MiuiCamera.apk into parts"
+          git push origin HEAD:refs/heads/${GITHUB_REF_NAME}
