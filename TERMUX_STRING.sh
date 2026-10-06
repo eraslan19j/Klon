@@ -1,25 +1,35 @@
 #!/data/data/com.termux/files/usr/bin/bash
 set +e
 APK=$HOME/camera_audit/X18PM_LEGENDARY_TEST.apk
-echo "==== STRING ===="
-python3 - <<PY
-import zipfile,re
-z=zipfile.ZipFile("$APK")
-# arsc + manifest utf16
-for n in ["resources.arsc","AndroidManifest.xml"]:
-    b=z.read(n)
-    u=b.decode("utf-16le","replace")
-    hits=[s for s in re.findall(r".{0,8}研发.{0,8}", u)]
-    hits2=[s for s in re.findall(r".{0,10}权限受限.{0,10}", u)]
-    print(n,"yanfa",hits[:10],"xianzhi",hits2[:10])
-# dex strings ascii
-for i in z.infolist():
-    if not i.filename.endswith(".dex"): continue
-    d=z.read(i.filename)
-    if b"\xe7\xa0\x94\xe5\x8f\x91" in d or "研发".encode() in d:
-        print("dex utf8", i.filename)
-    if "Providex".encode("utf-16le") in d:
-        print("dex u16 Providex", i.filename)
-print("ok")
+echo "==== STRING2 ===="
+python3 - <<'PY'
+import zipfile
+apk="/data/data/com.termux/files/home/camera_audit/X18PM_LEGENDARY_TEST.apk"
+needles={
+ "utf8_yanfa": "研发".encode(),
+ "utf8_xianzhi": "权限受限".encode(),
+ "u16_yanfa": "研发".encode("utf-16le"),
+ "u16_xianzhi": "权限受限".encode("utf-16le"),
+ "utf8_contact": "请联系".encode(),
+ "u16_contact": "请联系".encode("utf-16le"),
+}
+z=zipfile.ZipFile(apk)
+for info in z.infolist():
+    if info.file_size>40_000_000: continue
+    d=z.read(info.filename)
+    hits=[k for k,n in needles.items() if n in d]
+    if hits:
+        print("HIT", info.filename, hits, "size", info.file_size)
+print("scan apk done")
+PY
+echo "==== OPT JAR ===="
+python3 - <<'PY'
+from pathlib import Path
+p=Path("/system_ext/framework/miui-cameraopt.jar")
+print("jar", p.exists(), p if p.exists() else "")
+if p.exists():
+    b=p.read_bytes()
+    print("yanfa utf8", b.count("研发".encode()), "u16", b.count("研发".encode("utf-16le")))
+    print("xianzhi utf8", b.count("权限受限".encode()))
 PY
 echo "==== END ===="
