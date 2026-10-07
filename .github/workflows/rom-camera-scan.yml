@@ -28,9 +28,14 @@ jobs:
         run: |
           set -euo pipefail
           sudo apt-get update
-          sudo apt-get install -y --no-install-recommends aapt erofs-utils e2fsprogs xz-utils
-          go install github.com/ssut/payload-dumper-go@latest
-          echo "$HOME/go/bin" >> "$GITHUB_PATH"
+          sudo apt-get install -y --no-install-recommends aapt erofs-utils e2fsprogs xz-utils curl
+          mkdir -p "$HOME/.local/bin"
+          curl --fail --location --retry 3 --output "$RUNNER_TEMP/payload-dumper-go.tar.gz" \
+            https://github.com/ssut/payload-dumper-go/releases/download/2.1.0/payload-dumper-go_2.1.0_linux_amd64.tar.gz
+          tar -xzf "$RUNNER_TEMP/payload-dumper-go.tar.gz" -C "$HOME/.local/bin"
+          chmod +x "$HOME/.local/bin/payload-dumper-go"
+          "$HOME/.local/bin/payload-dumper-go" -h
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Reassemble, verify, enumerate payload, and inspect all camera APKs
         shell: bash
