@@ -1,1 +1,2 @@
 RODIN_OS3.0.305_CN/*.part-* filter=lfs diff=lfs merge=lfs -text
+RODIN_OS3.0.305_APKS/**/*.apk filter=lfs diff=lfs merge=lfs -text
