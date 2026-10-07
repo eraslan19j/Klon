@@ -9,7 +9,7 @@ on:
   workflow_dispatch:
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   scan:
@@ -239,6 +239,16 @@ jobs:
             echo '```'
           } >> "$GITHUB_STEP_SUMMARY"
           cat "$REPORT"
+
+      - name: Commit the reproducible report
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add rom-camera-report.txt
+          git commit -m 'Add RODIN OS3.0.305 CN camera inventory report'
+          git push
 
       - name: Upload camera report
         uses: actions/upload-artifact@v4
